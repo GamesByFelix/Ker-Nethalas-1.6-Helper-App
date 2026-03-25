@@ -1,5 +1,5 @@
-# Ker-Nethalas-1.6-Helper-App
-by gamesbyfelix.com
+# Ker Nethalas 1.6 Helper App
+by https://gamesbyfelix.com
 
 License: Creative Commons 4.0 CC-BY-NC
 
