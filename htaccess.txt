@@ -1,0 +1,3 @@
+AddType text/javascript .mjs
+AddType image/x-icon .ico
+AddType image/png .png

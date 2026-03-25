@@ -1,0 +1,2461 @@
+<!-- 
+	"Ker Nethalas Helper" Web App
+	by gamesbyfelix.com
+
+	v1.32
+	2025-12-25
+
+	License: Creative Commons 4.0 CC-BY-NC
+	https://gamesbyfelix.com
+
+	Ker Nethalas is a roleplaying game created by Alex T. for Blackoath Entertainment.
+	https://blackoathgames.com
+	-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Ker Nethalas 1.6 Helper App</title>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=1"
+		/>
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#000000" />
+		<link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+		<link rel="icon" href="favicon.ico" />
+		<link rel="icon" href="img/icon-192x192.png" />
+		<link rel="icon" type="image/x-icon" href="img/favicon.png" />
+		<meta name="description" content="Ker Nethalas 1.6 Helper App" />
+
+		<style>
+			@font-face {
+				font-family: "lexend";
+				src: url("fonts/lexend.ttf");
+			}
+			@font-face {
+				font-family: "newrocker";
+				src: url("fonts/newrocker.ttf");
+			}
+
+			* {
+				box-sizing: border-box;
+				touch-action: manipulation;
+			}
+
+			body {
+				font-family: "lexend", sans-serif;
+				font-size: 18px;
+				background-color: #101010;
+				color: #dddddd;
+				margin: 0;
+				padding: 0;
+			}
+
+			hr {
+				border: dashed 1px #454545;
+			}
+
+			#divBG {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				z-index: -1;
+				background-image: url(img/bg-texture.jpg);
+				background-position: center;
+				background-size: cover;
+			}
+			h1 {
+				all: unset;
+				color: #ffffff;
+				font-size: 22px;
+				font-weight: bold;
+				font-family: "newrocker", serif;
+			}
+
+			.big {
+				font-size: 26px;
+			}
+
+			.dark {
+				color: #888888;
+			}
+
+			.page {
+				font-family: "lexend", sans-serif;
+				font-size: 15px;
+				color: #888888;
+			}
+
+			a {
+				color: inherit;
+				text-decoration: underline;
+			}
+
+			#divContainer {
+				text-align: center;
+				width: 100vw;
+				height: 100vh;
+				margin: 0;
+				padding: 0;
+				overflow-y: auto;
+				overflow-x: hidden;
+				float: unset;
+			}
+
+			#divTop {
+				background-color: #000000;
+				color: inherit;
+				font-size: 0.75em;
+				padding: 2px 0px;
+				position: fixed;
+				top: 0;
+				width: 100%;
+			}
+
+			#divRoom {
+				padding: 1% 5%;
+			}
+
+			#divNotes {
+				text-align: center;
+				width: 49%;
+				height: 100vh;
+				margin: 0;
+				padding: 0;
+				overflow-y: scroll;
+				overflow-x: hidden;
+				display: none;
+				float: right;
+			}
+
+			#divRoom button,
+			#divNotes button,
+			#divSettings button {
+				/* background-color: #454545; */
+				background: linear-gradient(#ffffff10, #00000010),
+					url("img/bg-button.jpg") center / cover no-repeat;
+				border: none;
+				color: #dddddd;
+				cursor: pointer;
+				border-radius: 0.3em;
+				padding: 0.5em 0.5em;
+				margin: 0.2em 0em;
+				font-size: inherit;
+				font-family: inherit;
+			}
+
+			#divSettings button.redButton {
+				background: linear-gradient(#ffffff10, #aa3333aa),
+					url("img/bg-button.jpg") center / cover no-repeat;
+			}
+
+			#divRoom button:active,
+			#divNotes button:active,
+			#divSettings button:active {
+				box-shadow: inset 0 0 0 3px #aa3333;
+			}
+
+			.imgTile {
+				width: 200px;
+				border-radius: 10px;
+			}
+
+			.imgEncounter {
+				width: 500px;
+				max-width: 100%;
+				border-radius: 25px;
+			}
+
+			#divBottom {
+				display: block;
+				position: fixed;
+				left: 0;
+				bottom: -7rem;
+				width: 100%;
+				height: 9rem;
+				background-color: #000000;
+				overflow-y: scroll;
+				/* transition: bottom 0.5s ease-out; */
+			}
+
+			.divDiceContainer {
+				height: 12rem;
+				display: flex;
+				flex-direction: column;
+			}
+			.divDice {
+				display: flex;
+				flex-direction: row;
+				flex: 1;
+				gap: 2px;
+				height: 2rem;
+				margin: 2px 0px;
+			}
+
+			#btnToggleDice:active {
+				background-color: #aa3333;
+			}
+			#divBottom button {
+				font-family: inherit;
+				font-size: 1em;
+				border: none;
+				color: #dddddd;
+				cursor: pointer;
+				padding: 0;
+				margin: 0;
+				background-image: unset;
+			}
+
+			.btnDice {
+				height: 100%;
+				flex: 1;
+			}
+
+			.btnLabel {
+				color: #bbbbbb;
+				font-size: 0.75em;
+			}
+
+			summary {
+				cursor: pointer;
+			}
+
+			.notesText {
+				font-family: monospace;
+				font-size: 14px;
+				line-height: 20px;
+				color: white;
+				background-color: #333333;
+				border: 1px solid #888888;
+				width: 49%;
+				display: inline-block;
+				vertical-align: top;
+				margin-top: 0.3em;
+				border-radius: 0.3em;
+				padding: 0.3em 0.5em;
+				background: linear-gradient(#00000000, #00000044),
+					url("img/bg-paper.jpg") center / cover no-repeat;
+			}
+
+			.sumCharSheet {
+				font-family: "newrocker", serif;
+				margin-top: 0.3em;
+				font-size: 22px;
+			}
+
+			#divPDFTableIndex {
+				background-color: #000000dd;
+				height: 100%;
+				width: 100%;
+				overflow-y: auto;
+				display: none;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+
+			#divBottom button:active {
+				background-color: #aa3333;
+			}
+
+			#divSettings {
+				display: none;
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #000000ee;
+				text-align: center;
+			}
+
+			#divSettingContainer {
+				height: 100%;
+				display: inline-block;
+				max-width: 30em;
+				text-align: center;
+				overflow-y: auto;
+			}
+
+			#divCombatDice {
+				display: none;
+				/* display: block; */
+				position: fixed;
+				height: 12rem;
+				bottom: -10rem;
+				width: 50vw;
+				left: 50vw;
+				background-color: #000000;
+				background: linear-gradient(#000000dd, #00000044),
+					url("img/bg-paper.jpg") center / cover no-repeat;
+				overflow-y: scroll;
+			}
+
+			#divCombatDice button:active {
+				background-color: #aa3333;
+			}
+
+			#divCombatDice button {
+				font-family: inherit;
+				font-size: 1em;
+				border: none;
+				color: #dddddd;
+				cursor: pointer;
+				padding: 0;
+				margin: 0;
+				border-radius: 0;
+			}
+
+			.divCombatDiceContentContainer {
+			}
+			.divCombatDiceContent {
+				width: 40%;
+				margin: 0;
+				float: left;
+			}
+
+			.left {
+				text-align: left;
+			}
+
+			table {
+				width: 100%;
+			}
+
+			td {
+				width: 45%;
+				background-color: #20202088;
+				border-radius: 0.5em;
+				padding: 0.3em;
+				padding-bottom: 0.5em;
+				vertical-align: top;
+			}
+
+			.pointer {
+				cursor: pointer;
+			}
+
+			.bg1 {
+				background-color: #404040;
+			}
+			.bg2 {
+				background-color: #353535;
+			}
+			.bg3 {
+				background-color: #303030;
+			}
+			.bg4 {
+				background-color: #252525;
+			}
+			.bg5 {
+				background-color: #202020;
+			}
+			.bg6 {
+				background-color: #151515;
+			}
+			.bg7 {
+				background-color: #101010;
+			}
+			.bg8 {
+				background-color: #050505;
+			}
+
+			#spShortcuts {
+				display: none;
+			}
+
+			@media (orientation: landscape) {
+				#divContainer {
+					width: 50vw;
+					float: left;
+				}
+				#divNotes {
+					display: block;
+				}
+				#divBottom,
+				#divTop {
+					width: 50vw;
+				}
+				#spShortcuts {
+					display: inline;
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="divBG"></div>
+		<div id="divContainer">
+			<div id="divTop">
+				<a onclick="fnToggleSettings(1)" style="cursor: pointer"
+					>Settings / Info / Music</a
+				>
+			</div>
+			<br />
+			<div id="divRoom"></div>
+
+			<div id="divBottom" style="overflow: hidden">
+				<button
+					id="btnToggleDice"
+					class="btnDice bg5"
+					onclick="fnToggleDice()"
+					style="height: 2rem; width: 100%"
+					title="Shortcut: D"
+				>
+					&#9650;
+				</button>
+
+				<div
+					id="divPDFcontainer"
+					style="
+						height: calc(100% - 12rem);
+						justify-content: center;
+						position: relative;
+					"
+				>
+					<div id="divPDFTableIndex">
+						<br />
+						<a href="#" class="openPDF" data-page="193"
+							>Armor - Full Suit p. 193</a
+						><br />
+						<a href="#" class="openPDF" data-page="194"
+							>Armor - Greaves p. 194</a
+						><br />
+						<a href="#" class="openPDF" data-page="194"
+							>Armor - Torso p. 194</a
+						><br />
+						<a href="#" class="openPDF" data-page="194"
+							>Armor - Vambraces p. 194</a
+						><br />
+						<a href="#" class="openPDF" data-page="119"
+							>Combat Encounters p. 119</a
+						><br />
+						<a href="#" class="openPDF" data-page="195"
+							>Common Gear p. 195</a
+						><br />
+						<a href="#" class="openPDF" data-page="87"
+							>Corridor Description p. 87</a
+						><br />
+						<a href="#" class="openPDF" data-page="70"
+							>Damage Dealt p. 70</a
+						><br />
+						<a href="#" class="openPDF" data-page="206"
+							>Damage Type p. 206</a
+						><br />
+						<a href="#" class="openPDF" data-page="67"
+							>Defensive Move p. 67</a
+						><br />
+						<a href="#" class="openPDF" data-page="63"
+							>Difficulty Modifier p. 63</a
+						><br />
+						<a href="#" class="openPDF" data-page="206"
+							>Enemy Type p. 206</a
+						><br />
+						<a href="#" class="openPDF" data-page="95"
+							>Events p. 95</a
+						><br />
+						<a href="#" class="openPDF" data-page="78"
+							>Exhaustion Effect p. 78</a
+						><br />
+						<a href="#" class="openPDF" data-page="197"
+							>Fragments p. 197</a
+						><br />
+						<a href="#" class="openPDF" data-page="73"
+							>Fumbles p. 73</a
+						><br />
+						<a href="#" class="openPDF" data-page="205"
+							>Full Suit & Torso p. 205</a
+						><br />
+						<a href="#" class="openPDF" data-page="198"
+							>Gems & Jewelry p. 198</a
+						><br />
+						<a href="#" class="openPDF" data-page="106"
+							>Growing Darkness p. 106</a
+						><br />
+						<a href="#" class="openPDF" data-page="193"
+							>Helmets p. 193</a
+						><br />
+						<a href="#" class="openPDF" data-page="69"
+							>Hit Locations p. 69</a
+						><br />
+						<a href="#" class="openPDF" data-page="206"
+							>Item p. 206</a
+						><br />
+						<a href="#" class="openPDF" data-page="206"
+							>Item Rarity p. 206</a
+						><br />
+						<a href="#" class="openPDF" data-page="199"
+							>Lore Books p. 199</a
+						><br />
+						<a href="#" class="openPDF" data-page="79"
+							>Madness p. 79</a
+						><br />
+						<a href="#" class="openPDF" data-page="213"
+							>Magic Item Peculiarity p. 213</a
+						><br />
+						<a href="#" class="openPDF" data-page="207"
+							>Magic Properties - Armor p. 207</a
+						><br />
+						<a href="#" class="openPDF" data-page="208"
+							>Magic Properties - Belt p. 208</a
+						><br />
+						<a href="#" class="openPDF" data-page="209"
+							>Magic Properties - Boots p. 209</a
+						><br />
+						<a href="#" class="openPDF" data-page="210"
+							>Magic Properties - Gloves p. 210</a
+						><br />
+						<a href="#" class="openPDF" data-page="211"
+							>Magic Properties - Rings p. 211</a
+						><br />
+						<a href="#" class="openPDF" data-page="212"
+							>Magic Properties - Weapons p. 212</a
+						><br />
+						<a href="#" class="openPDF" data-page="196"
+							>Mundane Items p. 196</a
+						><br />
+						<a href="#" class="openPDF" data-page="165"
+							>Overseer p. 165</a
+						><br />
+						<a href="#" class="openPDF" data-page="87"
+							>Overseer Influence p. 87</a
+						><br />
+						<a href="#" class="openPDF" data-page="112"
+							>Personal Goals p. 112</a
+						><br />
+						<a href="#" class="openPDF" data-page="203"
+							>Potions p. 203</a
+						><br />
+						<a href="#" class="openPDF" data-page="111"
+							>Potion Aging p. 111</a
+						><br />
+						<a href="#" class="openPDF" data-page="196"
+							>Precious Items p. 196</a
+						><br />
+						<a href="#" class="openPDF" data-page="205"
+							>Random Armor p. 205</a
+						><br />
+						<a href="#" class="openPDF" data-page="63"
+							>Random Difficulty p. 63</a
+						><br />
+						<a href="#" class="openPDF" data-page="204"
+							>Random Mastery p. 204</a
+						><br />
+						<a href="#" class="openPDF" data-page="205"
+							>Random Shield p. 205</a
+						><br />
+						<a href="#" class="openPDF" data-page="204"
+							>Random Weapon p. 204</a
+						><br />
+						<a href="#" class="openPDF" data-page="215"
+							>Relics p. 215</a
+						><br />
+						<a href="#" class="openPDF" data-page="204"
+							>Resources p. 204</a
+						><br />
+						<a href="#" class="openPDF" data-page="89"
+							>Room Description p. 89</a
+						><br />
+						<a href="#" class="openPDF" data-page="103"
+							>Scavenging p. 103</a
+						><br />
+						<a href="#" class="openPDF" data-page="193"
+							>Shields p. 193</a
+						><br />
+						<a href="#" class="openPDF" data-page="196"
+							>Spoils p. 196</a
+						><br />
+						<a href="#" class="openPDF" data-page="105"
+							>Traps p. 105</a
+						><br />
+						<a href="#" class="openPDF" data-page="196"
+							>Valuable Items p. 196</a
+						><br />
+						<a href="#" class="openPDF" data-page="205"
+							>Vambraces, Greaves & Helmets p. 205</a
+						><br />
+						<a href="#" class="openPDF" data-page="190"
+							>Weapons p. 190</a
+						><br />
+						<a href="#" class="openPDF" data-page="14"
+							>Which Crime Where You Accused Of? p. 14</a
+						><br /><br />
+					</div>
+					<canvas
+						id="pdf"
+						style="width: auto; height: 100%; overflow-y: auto"
+					></canvas>
+				</div>
+				<div id="divDiceContainer">
+					<div
+						class="divDice"
+						id="divPDFbuttons"
+						style="display: none"
+					>
+						<button
+							id="btnPDFprev"
+							class="btnDice bg1"
+							title="Shortcut: Left Arrow"
+						>
+							<
+						</button>
+						<button
+							id="btnPDFtoggle"
+							class="btnDice bg1"
+							title="Shortcut: P"
+							onclick="fnTogglePDF()"
+						>
+							PDF
+						</button>
+						<button
+							id="btnPDFIndexToggle"
+							class="btnDice bg1"
+							onclick="fnTogglePDFIndex()"
+							title="Shortcut: T"
+						>
+							Tables
+						</button>
+
+						<button
+							id="btnPDFnext"
+							class="btnDice bg1"
+							title="Shortcut: Right Arrow"
+						>
+							>
+						</button>
+					</div>
+					<div class="divDice">
+						<button
+							id="btnD100"
+							class="btnDice bg1"
+							onclick="fnD(100)"
+							title="Shortcut: 0 or Ctrl-1"
+						>
+							D100
+						</button>
+						<button
+							id="btnD20"
+							class="btnDice bg2"
+							onclick="fnD(20)"
+							title="Shortcut: 2"
+						>
+							D20
+						</button>
+						<button
+							id="btnD12"
+							class="btnDice bg3"
+							onclick="fnD(12)"
+							title="Shortcut: Ctrl-2"
+						>
+							D12
+						</button>
+						<button
+							id="btn2D6"
+							class="btnDice bg4"
+							onclick="fnD('2d6')"
+							title="Shortcut: Ctrl-6"
+						>
+							2D6
+						</button>
+					</div>
+					<div class="divDice">
+						<button
+							id="btnD10"
+							class="btnDice bg5"
+							onclick="fnD(10)"
+							title="Shortcut: 1"
+						>
+							D10
+						</button>
+						<button
+							id="btnD8"
+							class="btnDice bg6"
+							onclick="fnD(8)"
+							title="Shortcut: 8"
+						>
+							D8
+						</button>
+
+						<button
+							id="btnD6"
+							class="btnDice bg7"
+							onclick="fnD(6)"
+							title="Shortcut: 6"
+						>
+							D6
+						</button>
+						<button
+							id="btnD4"
+							class="btnDice bg8"
+							onclick="fnD(4)"
+							title="Shortcut: 4"
+						>
+							D4
+						</button>
+					</div>
+					<div class="divDice">
+						<button
+							id="btnDiff"
+							class="btnDice bg3"
+							onclick="fnDiff()"
+						>
+							Difficulty
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="divNotes">
+			<br />
+			<details id="detChar" open>
+				<summary class="sumCharSheet" title="Shortcut: C">
+					<b>Character</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="13"
+							>(p. 13)</a
+						></span
+					>
+				</summary>
+				<span class="page">
+					Progression
+					<a href="#" class="openPDF" data-page="60">(p. 60)</a>
+					&emsp;Attributes
+					<a href="#" class="openPDF" data-page="16">(p. 16)</a>
+					&emsp;Skills
+					<a href="#" class="openPDF" data-page="17">(p. 17)</a>
+					&emsp;Masteries
+					<a href="#" class="openPDF" data-page="19">(p. 19)</a></span
+				><br />
+				<textarea
+					id="txtCharLeft"
+					class="notesText"
+					rows="27"
+				></textarea>
+				<textarea
+					id="txtCharRight"
+					class="notesText"
+					rows="27"
+				></textarea>
+				<br />
+				<span class="page">
+					Hit Locations
+					<a href="#" class="openPDF" data-page="69">(p. 69)</a>
+					&emsp;Damage Dealt
+					<a href="#" class="openPDF" data-page="70">(p. 70)</a>
+					&emsp;Defensive Moves
+					<a href="#" class="openPDF" data-page="67">(p. 67)</a>
+					&emsp;Healing
+					<a href="#" class="openPDF" data-page="74">(p. 74)</a></span
+				>
+			</details>
+			<details id="detInv">
+				<summary class="sumCharSheet" title="Shortcut: I">
+					<b>Inventory</b>
+				</summary>
+				<span class="page">
+					Resting
+					<a href="#" class="openPDF" data-page="109">(p. 109)</a>
+					&emsp;Encumbrance
+					<a href="#" class="openPDF" data-page="188">(p. 188)</a>
+					&emsp;Weapons
+					<a href="#" class="openPDF" data-page="189">(p. 189)</a>
+					&emsp;Armor
+					<a href="#" class="openPDF" data-page="192">(p. 192)</a>
+					&emsp;Traders
+					<a href="#" class="openPDF" data-page="221"
+						>(p. 221)</a
+					></span
+				><br />
+				<textarea
+					id="txtInvLeft"
+					class="notesText"
+					rows="18"
+				></textarea>
+				<textarea
+					id="txtInvRight"
+					class="notesText"
+					rows="18"
+				></textarea>
+			</details>
+			<details id="detDomain">
+				<summary class="sumCharSheet" title="Shortcut: J">
+					<b>Domain / Journal</b>
+				</summary>
+				<span class="page">
+					Overseers
+					<a href="#" class="openPDF" data-page="165">(p. 165)</a>
+					&emsp;Influence
+					<a href="#" class="openPDF" data-page="87">(p. 87)</a>
+					&emsp;Events
+					<a href="#" class="openPDF" data-page="106"
+						>(p. 106)</a
+					> </span
+				><br />
+				<textarea id="txtDomain" class="notesText" rows="18"></textarea>
+				<textarea id="txtNotes" class="notesText" rows="18"></textarea>
+			</details>
+			<details>
+				<summary
+					class="sumCharSheet"
+					title="Export and import your character sheet and notes."
+				>
+					<b>Backup Notes</b>
+				</summary>
+				<br />
+				<input
+					type="file"
+					id="fileImport"
+					accept=".json"
+					style="display: none"
+				/>
+				<button onclick="fnBackupNotes()" title="Shortcut: Ctrl-S">
+					Backup Notes</button
+				>&emsp;<button id="btnImport">Import Notes</button>
+			</details>
+			<br /><br />
+			<div id="divCombatDice" style="overflow: hidden">
+				<button
+					id="btnToggleCombatDice"
+					class="bg5"
+					onclick="fnToggleCombatDice()"
+					style="height: 2rem; width: 100%"
+					title="Shortcut: Shift-D"
+				>
+					&#9650; Combat Overlay
+				</button>
+				<div id="divCombatDiceContentContainer">
+					<div id="divIniLeft" class="divCombatDiceContent">
+						Initiative
+					</div>
+					<div class="divCombatDiceContent" style="width: 20%">
+						<button onclick="fnSwapIni()">< ></button>
+					</div>
+					<div id="divIniRight" class="divCombatDiceContent">
+						&nbsp;
+					</div>
+					<br />
+					<div id="divAttLeft" class="divCombatDiceContent">
+						Attacker (+10)
+					</div>
+					<div class="divCombatDiceContent" style="width: 20%">
+						<button onclick="fnSwapAtt()">< ></button>
+					</div>
+					<div id="divAttRight" class="divCombatDiceContent">
+						&nbsp;
+					</div>
+					<br />
+					<div class="divCombatDiceContent left">Player</div>
+					<div class="divCombatDiceContent" style="width: 20%">
+						&nbsp;
+					</div>
+					<div class="divCombatDiceContent left">
+						Enemy #1<br />
+						Enemy #2<br />
+						Enemy #3<br />
+						Enemy #4<br />
+						Enemy #5<br />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="divSettings">
+			<div id="divSettingContainer">
+				<br /><br />
+				Helper App for
+				<a
+					href="https://blackoathgames.com/ker-nethalas-into-the-midnight-throne"
+					target="_blank"
+					>Ker Nethalas 1.6</a
+				><br />
+				by gamesbyfelix.com
+				<hr />
+				My other player-aids:<br />
+				<a
+					href="https://www.drivethrurpg.com/en/publisher/23064/gamesbyfelix"
+					target="_blank"
+					>DriveThruRPG</a
+				><br />
+				<a href="https://gamesbyfelix.com" target="_blank"
+					>gamesbyfelix.com</a
+				><br />
+				<hr />
+				<div class="left">
+					Music:<br />
+					<a
+						href="https://somafm.com/player24/station/doomed"
+						target="_blank"
+						>Soma FM: Doomed</a
+					><br />
+					<a
+						href="https://somafm.com/player24/station/darkzone"
+						target="_blank"
+						>Soma FM: The Dark Zone</a
+					><br />
+					<a
+						href="https://somafm.com/player24/station/dronezone"
+						target="_blank"
+						>Soma FM: Drone Zone</a
+					><br />
+				</div>
+				<a href="https://somafm.com/support/" target="_blank"
+					><span class="page">Support Your Public Radio</span></a
+				>
+
+				<hr />
+				Link the Ker Nethalas 1.6 rulebook PDF to this app:<br />
+				<button id="pick">Link PDF</button><br />
+				<span class="page"
+					>The PDF is not shared, transmitted or changed.<br />It
+					remains locally on your device.</span
+				>
+				<hr />
+				When viewed in a landscape screen orientation, a basic
+				<b>character sheet</b> is displayed. This allows you to play the
+				game digitally on a laptop or tablet.
+				<hr />
+				<div class="left">
+					Settings:<br />
+					<label class="pointer"
+						><input
+							type="checkbox"
+							id="chkCore"
+							onchange="fnSettingsEnemies()"
+							checked
+						/>
+						Core Rulebook Enemies</label
+					><br />
+					<label class="pointer"
+						><input
+							type="checkbox"
+							id="chkVC1"
+							onchange="fnSettingsEnemies()"
+							unchecked
+						/>
+						Vaelorian Codex #1 Enemies</label
+					><br />
+					<label class="pointer"
+						><input
+							type="checkbox"
+							id="chkVC2"
+							onchange="fnSettingsEnemies()"
+							unchecked
+						/>
+						Vaelorian Codex #2 Enemies</label
+					>&emsp;<br />
+				</div>
+				<hr />
+				<div class="left">
+					Keyboard Shortcuts:<br />
+					N - New Room/Corridor<br />
+					D - Toggle Dice/PDF Overlay<br />
+					Numbers - Roll Dice
+					<span class="page">(see button tooltips)</span><br />
+					P - Toggle PDF<br />
+					T - Toggle Table Index<br />
+					Left/Right - Prev/Next PDF Page<br />
+
+					<span id="spShortcuts">
+						C - Toggle Character Sheet<br />
+						I - Toggle Inventory<br />
+						J - Toggle Journal<br />
+						Esc - Unfocus Textarea<br />
+						Ctrl-S - Backup Notes<br />
+					</span>
+
+					<hr />
+				</div>
+				<button onclick="fnReset(0)" class="redButton">Reset App</button
+				><br /><span class="page"
+					>Clears all settings and data. Resets the character sheets.
+					If the app doesn't load properly after an update, resetting
+					it usually fixes the problem.</span
+				>
+				<hr />
+				<button onclick="fnToggleSettings(0)">Close Menu</button
+				><br /><br /><br /><br /><br />
+			</div>
+		</div>
+
+		<div id="divCombatInfo" style="display: none">
+			<div
+				style="max-width: 25em; text-align: left; display: inline-block"
+			>
+				<details>
+					<summary style="text-align: center; cursor: pointer">
+						<b>Combat Info</b>
+					</summary>
+					<i
+						>Initiative Modifiers
+						<span class="page"
+							><a href="#" class="openPDF" data-page="66"
+								>(p. 66)</a
+							></span
+						></i
+					><br />
+					+10 for <b>Quick</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					<br />
+					<i>Weapon Skill Modifiers </i><br />
+					+20 once during <b>Surprise</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="66"
+							>(p. 66)</a
+						></span
+					><br />
+					+10 for <b>Attacker</b><br />
+					+Weapon <b>Speed</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="68"
+							>(p. 68)</a
+						></span
+					><br />
+					+10 for <b>Simple</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					-30 when <b>Dual Wielding</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="72"
+							>(p. 72)</a
+						></span
+					><br />
+					+10 when Defending with <b>Parrying</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					+<b>Shield</b> Parry Bonus
+					<span class="page"
+						><a href="#" class="openPDF" data-page="193"
+							>(p. 193)</a
+						></span
+					><br />
+					<br />
+					<i
+						>Damage Table Roll Modifiers
+						<span class="page"
+							><a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a
+							></span
+						></i
+					><br />
+					+1 for <b>Powerful</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					+1 for <b>Two-Handed</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					+1 for <b>Versatile</b> Trait
+					<span class="page"
+						><a href="#" class="openPDF" data-page="189"
+							>(p. 189)</a
+						></span
+					><br />
+					+D6 for <b>Critical Hit</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="72"
+							>(p. 72)</a
+						></span
+					><br />
+					<br />
+					<i
+						>Damage Dealt Modifiers
+						<span class="page"
+							><a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a
+							></span
+						></i
+					><br />
+					+1 when <b>Piercing</b> with Initiative
+					<span class="page"
+						><a href="#" class="openPDF" data-page="71"
+							>(p. 71)</a
+						></span
+					><br />
+					+2 when <b>Dual Wielding</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="72"
+							>(p. 72)</a
+						></span
+					><br />
+					<br />
+					<i>Miscellaneous:</i><br />
+					&bullet; <b>Maneuverability</b> affects Acrobatics, Dodge
+					and Stealth
+					<span class="page"
+						><a href="#" class="openPDF" data-page="192"
+							>(p. 192)</a
+						></span
+					><br />
+					&bullet; <b>Hit Locations</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="69"
+							>(p. 69)</a
+						></span
+					><br />
+					&bullet; <b>Damage Types</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="70"
+							>(p. 70)</a
+						></span
+					><br />
+					&bullet; <b>Conditions</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="76"
+							>(p. 76)</a
+						></span
+					><br />
+					&bullet; <b>Creature Traits</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="119"
+							>(p. 119)</a
+						></span
+					><br /><br />
+					<i>After Combat:</i><br />
+					&bullet; <b>Recover</b> D4 Toughness
+					<span class="page"
+						><a href="#" class="openPDF" data-page="74"
+							>(p. 74)</a
+						></span
+					><br />
+					&bullet; <b>Gain 50 XP</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="60"
+							>(p. 60)</a
+						></span
+					><br />
+					&bullet; Check <b>Armor Integrity</b>
+					<span class="page"
+						><a href="#" class="openPDF" data-page="72"
+							>(p. 72)</a
+						></span
+					><br />
+					&bullet; <b>Spoils</b> Table
+					<span class="page"
+						><a href="#" class="openPDF" data-page="196"
+							>(p. 196)</a
+						></span
+					><br />
+					&bullet; <b>Resources</b> Table
+					<span class="page"
+						><a href="#" class="openPDF" data-page="204"
+							>(p. 204)</a
+						></span
+					><br />
+					&bullet; <b>Aether</b> is restored upon entering a room
+					<span class="page"
+						><a href="#" class="openPDF" data-page="16"
+							>(p. 16)</a
+						></span
+					><br />
+				</details>
+			</div>
+		</div>
+
+		<script>
+			const reload = "3";
+			const chkEnemiesCore = document.getElementById("chkCore");
+			const chkEnemiesVC1 = document.getElementById("chkVC1");
+			const chkEnemiesVC2 = document.getElementById("chkVC2");
+			const divRoom = document.getElementById("divRoom");
+			const divCombatInfo = document.getElementById("divCombatInfo");
+			const dbRoomDesc = [
+				"Rusty iron shackles hang from the walls, and the floor is littered with the remains of those who suffered unspeakable agony.",
+				"This regal hall is filled with shattered marble thrones, a stark reminder of the empire's fallen rulers and the broken legacy they left behind.",
+				"Eerie whispers fill the air in this dimly lit crypt, where the tormented spirits of the empire's cursed rulers still roam in eternal restlessness.",
+				"The stone altar in the center of the room is covered in dried blood, a chilling testament to the dark rituals that once took place here.",
+				"A vast network of burial niches houses the remains of countless forgotten souls, their existence erased from history.",
+				"Chains of all sizes hang from the ceiling, the clinking sound echoing like a haunting melody in this hall of imprisonment.",
+				"Sculptures of mournful figures adorn the walls, each seemingly caught in an eternal state of sorrow and despair.",
+				"The room is perpetually shrouded in darkness, where even torches struggle to dispel the oppressive gloom.",
+				"Tombstones and coffins line the walls, bearing the names of lovers separated by death, forever longing for each other's embrace.",
+				"Useless trinkets and baubles lie scattered about, remnants of the once-great Vaelorian Ascendancy now reduced to forgotten relics.",
+				"This room seems to have been blasted by a source of water for millenia, since all the surfaces are smooth and slippery.",
+				"An opulent throne sits empty in the center of this chamber, surrounded by dust and decay, a symbol of the empire's fallen glory.",
+				"Echoes of anguished cries reverberate through this room, as if the walls themselves are weeping for the tragedies that unfolded within.",
+				"Foul, withered plants and skeletal trees twist and reach for sunlight that will never touch them.",
+				"A pitch-black room that gives the illusion of extending infinitely downward, leaving those who enter with an overwhelming sense of dread.",
+				"This crypt room holds the remains of those cursed to eternal damnation, their souls forever trapped in this unholy place.",
+				"A massive, ominous statue looms over the room, depicting a malevolent deity once worshiped by the empire's rulers.",
+				"Ghostly apparitions drift through these halls, their faint whispers offering cryptic warnings and messages.",
+				"An ancient stone altar dominates the room, surrounded by blood-stained grooves where countless offerings met their end.",
+				"This room houses the remains of traitors and turncoats, eternally damned for their betrayal of the empire.",
+				"Dark, arcane symbols cover the walls, hinting at the dark rituals once conducted within these unhallowed grounds.",
+				"The bones of the empire's most wicked are piled high in this macabre display of death's inevitability.",
+				"An eerie ticking fills the air as an ancient, enchanted clock counts down the minutes to oblivion.",
+				"Any sound uttered within this hall fades into nothingness, as if the room devours all noise.",
+				"Broken vials, shattered beakers, and rotting experiments reveal an alchemist's ill-fated pursuit of forbidden knowledge.",
+				"Ancient scrolls and tomes rest on dust-covered shelves. Touching any of them quickly turns them into piles of dust.",
+				"The stench of death hangs heavy in this room. Judging by some carvings, the Vaelorians disposed of their enemies in mass graves right here.",
+				"A morbid altar stands before a statue of a martyr who endured unimaginable pain in the name of faith.",
+				"The remains of a once-grand spire lie in ruin, a monument to a forgotten hero of the Vaelorian Ascendancy.",
+				"As you enter this room, haunting visions and terrifying illusions assault you.",
+				"Dark rituals once performed here have left an indelible mark on the walls, perpetually tainted by the essence of necromancy.",
+				"The shadows of tormented souls replay their darkest moments in an eternal loop, forever haunted by their past actions.",
+				"Ancient weapons and armor line the walls, too old and brittle to be of any use to you.",
+				"The walls bear ghostly imprints of anguished faces, as if the room captures the final moments of those who met a tragic end.",
+				"Shadows move independently from their sources, dancing across the walls like malevolent spirits.",
+				"A still, black pool reflects the darkest aspects of one's soul, showing the horrors hidden within.",
+				"Mirrors shattered into jagged pieces create a disorienting effect, distorting reality and reflecting haunting images.",
+				"An eerie aura permeates this room, where the empire once sought answers from a cryptic and enigmatic oracle.",
+				"Statues of macabre figures surround a central platform, where dark ceremonies once called upon malevolent powers.",
+				"A large crack in the room's floor reveals a deep, dark abysm.",
+				"This room holds within it an unholy shrine dedicated to dark forces.",
+				"No sound can be heard in this room, not even the slightest whisper, creating an unsettling atmosphere of absolute quiet.",
+				"This seems to be the final resting place of an emperor who history has forgotten, his name erased from all records.",
+				"Broken chandeliers hang from the ceiling, and tattered banners once heralded celebrations now lay in ruin.",
+				"Heat emanates from this room, and you can see the glow of lava in a corner, the viscous material dripping from a crack on the wall.",
+				"An eerie, dim light filters through an enchanted glass ceiling, casting an otherworldly twilight over the room.",
+				"Mirrors made from dark, reflective obsidian distort your reflection, your lightsource casting haunting shadows.",
+				"Shrines to deities long abandoned by worshippers now stand in silence, their names etched into forgotten prayer tablets.",
+				"Ancient telescopes and stargazing instruments remain untouched, though the stars they once observed have long changed.",
+				"A once-powerful empress was buried here, her empty sarcophagus adorned with gilded glyphs.",
+				"The room is plagued by an unnatural, freezing chill that numbs the bones as soon as you enter.",
+				"Broken vials and failed experiments litter the room, reminders of the desperate and deadly alchemical pursuits.",
+				"An overgrown courtyard now serves as a graveyard, with tombstones dotting the landscape where once joyous celebrations took place.",
+				"Twisted and grotesque sculptures rest on pedestals, each representing the artist's descent into madness.",
+				"The apparitions of those who died seeking revenge are trapped in this room, their anger seething for eternity.",
+				"Taxidermy displays of long-extinct creatures and monstrous beasts line the walls, their glass eyes seemingly alive.",
+				"The faint sounds of mournful music fill the air, emanating from unseen instruments in this haunted room.",
+				"This chamber once housed the living quarters of a family of servants. Faint children's drawings can be seen of the walls.",
+				"This room houses a shrine dedicated to a lunar deity. Its worshipers once performed heinous acts under the cursed moon's glow.",
+				"A large crypt, where the sound of mourning and weeping echoes endlessly.",
+				"A chamber once dedicated to studying the stars, now abandoned and covered in dust.",
+				"Phantom weapons float in the air, suspended in an unsettling display of ethereal power.",
+				"Plans for grand structures, some never built, while others bore terrible secrets, now rest here with the remains of their creator.",
+				"Statues of once-lovely nymphs are now twisted and grotesque, surrounded by thorns and brambles.",
+				"This once-imposing chamber is now decayed and crumbling, a symbol of the empire's decline.",
+				"A series of arcane symbols that you've never encountered before cover the walls of this chamber.",
+				"Phantom wails fill the air, as the spirits of wronged women lament their tragic fates.",
+				"An ancient, corrupted forge where weapons were crafted from the souls of the fallen.",
+				"The statues of weeping angels line this hall, their faces eternally frozen in grief.",
+				"The resting place of an heir to the empire, whose lineage has been lost to history.",
+				"The walls are adorned with eerie petrified faces that seem to whisper secrets to those who listen.",
+				"This chamber is made entirely of black stone, and any light that enters is quickly swallowed by its darkness.",
+				"An ornate stone chalice sits on an altar. It appears to have been fused to it by some extreme heat.",
+				"This room's walls are covered with the tattered remains of ancient heraldic banners.",
+				"At the center of this room, a seemingly bottomless pit drops into the darkness, its true depth a mystery that strikes fear into your heart.",
+				"An otherworldly mist fills the room, giving glimpses of fleeting, forgotten dreams from the past.",
+				"A cursed oracle once dwelt here, their prophecies leading to doom and despair for those who sought answers.",
+				"A dark and foreboding courtyard where twisted shadows play tricks on the mind.",
+				"The room is filled with the remains of lovers forever entwined in death, their skeletal hands locked in an eternal embrace.",
+				"An otherworldly chamber where the boundaries between dimensions blur, allowing glimpses into distant realms.",
+				"Horrifying paintings and sculptures depict scenes of unimaginable suffering and torment.",
+				"This room has a well on a corner, but the water within it is clearly tainted with an eerie glow.",
+				"This chamber is completely covered in fungi and mold of all kinds, making every step feel as if you're walking on a thick rug.",
+				"Small, empty cells line the walls of this room.",
+				"The walls are adorned with macabre paintings depicting brutal executions and violent sacrifices.",
+				"Sealed off for centuries, this room contains unspeakable horrors that were best left undisturbed.",
+				"An eerie fountain still trickling water is at the center of the room, a peaceful, almost out of place view.",
+				"Disorienting illusions assault you momentarily as you step into this room, showing you images of your past.",
+				"This room was once a treasure vault filled with riches, but it has long since been ransacked.",
+				"A once-lavish parlor now lies in ruin, its grandeur replaced by decay and the stench of death.",
+				"Rotten piles of furniture and rusted utensils are all you can see in this room.",
+				"The walls are covered in soot and fire marks, clearly indicating that a great fire took place here.",
+				"This room is completely empty, except for a thick layer of dust. A set of human footprints can be seen across the room.",
+				"As you enter this hall you feel an overwhelming sense of hopelessness, as if all optimism is slowly being drained from your heart.",
+				"A chamber adorned with gold and jewels. A closer look reveals them to be just paint and glass.",
+				"A once-revered shrine now stands in darkness, forgotten by all but malevolent entities.",
+				"Statues of ancient warriors stand guard, their once-pristine surfaces now marred by crimson stains.",
+				"Old iron ingots are piled in a corner of this room, each one of them marked with the seal of an ancient house.",
+				"An unnatural wind seems to be constantly coming out of this room, violently flapping your clothes and gear around you.",
+				"An unquenchable, ghostly flame flickers and dances, casting eerie shadows on the walls, forever burning but never consuming.",
+			];
+			const dbCorridorDesc = [
+				"The air is heavy with ancient dust, and the walls are lined with cobwebs. The faint echoes of distant footsteps can be heard.",
+				"Flickering torches cast eerie shadows on the stone walls. The air is damp, and the occasional drip of water can be heard.",
+				"The tunnel is barely wide enough for a single person to pass through. The walls are lined with ancient burial niches, some of which have been disturbed. You're not sure if from within or without…",
+				"Thick moss covers the damp stone walls, giving the corridor an eerie green glow. The sound of water dripping echoes throughout.",
+				"The passage is partially blocked by a cave-in, with rubble and debris scattered across the floor. Dim light filters through cracks in the ceiling.",
+				"The walls are adorned with elaborate tomb reliefs and carved epitaphs. The air feels heavy with the presence of the long-departed.",
+				"The narrow stone hall twists and turns, disappearing into darkness. The hall seems to have a slight downwards inclination, and it feels worn and slippery.",
+				"The air here is stale, and the sound of rats scurrying can be heard in the distance.",
+				"An eerie silence fills this corridor, broken only by the faint whispers of long-dead spirits. The air is heavy with an otherworldly stillness.",
+				"Strange luminescent fungi cover the walls, casting an ethereal glow. The tunnel twists and turns, creating an unsettling sense of disorientation.",
+				"This wide corridor is lined with towering statues and ornate sarcophagi. Faded tapestries hang from the ceiling, telling stories of ancient rulers.",
+				"The tunnel is partially submerged in water, with small ripples disturbing its still surface. The faint odor of decay permeates the air.",
+				"A hidden alcove branches off from the main passage, housing a forgotten altar or a small shrine. Dust-covered offerings lie undisturbed.",
+				"Strange symbols are etched onto the walls of this hall, possibly indicating directions.",
+				"The walls of this tunnel bear scorch marks, evidence of past fire or magical explosions. The air carries a faint smell of burnt wood and stone.",
+				"Time and decay have taken their toll on this corridor, with crumbling walls and ceilings. It feels unstable and prone to collapse.",
+				"Faint whispers and hushed voices fill the air, voices carried through time.",
+				"The stench of decay is overpowering in this tunnel, infested with ravenous vermin that lurk in the shadows.",
+				"Intricate carvings adorn the walls, depicting scenes of ancient rituals and funerary rites. The air is heavy with a sense of solemnity and reverence.",
+				"The corridor seems to shimmer with an otherworldly glow. Transparent figures of long-dead souls can be seen drifting through the walls, oblivious to the living.",
+			];
+			const dbEnemiesCore = [
+				["Abyssal Vexator"],
+				["Amalgam"],
+				["Armor Construct"],
+				["Astral Beast"],
+				["Bladewings"],
+				["Blood Stalker"],
+				["Blightfang Rats"],
+				["Bone Golem"],
+				["Bone Spiders"],
+				["Cavebound Leech"],
+				["Corpse Ants"],
+				["Death Sage"],
+				["Desiccated Cryptguards"],
+				["Dwerax"],
+				["Fangvine"],
+				["Flayed Knight"],
+				["Flesh Eater"],
+				["Fleshmelt Slime"],
+				["Giant Spider"],
+				["Hive Larvae"],
+				["Hive Warrior"],
+				["Hollow Shambler"],
+				["Living Moss"],
+				["Necropede"],
+				["Netherfiend"],
+				["Plaguebringer"],
+				["Pyreborn"],
+				["Ratkin Marauders"],
+				["Razorjaw"],
+				["Reanimated Homunculus"],
+				["Rotwalkers"],
+				["Skeletal Horrors"],
+				["Stone Warden"],
+				["Swarmer"],
+				["Tomb Crawler"],
+				["Umbra Fiend"],
+				["Unfettered Familiar"],
+				["Vaelorian Magus"],
+				["Vinekin"],
+				["Voidweaver"],
+				["Vorleg"],
+				["Wraithskull"],
+				["Wrath Elemental"],
+			];
+			const dbEnemiesVC1 = [];
+			const dbEnemiesVC2 = [];
+			const dbEvents = [
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's a trap in this room. Roll on the Traps table  <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a> and follow the usual procedures.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`There's something of value here. Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`You've found a Trader <a href="#" class="openPDF" data-page="221"
+								>(p. 221)</a>.`,
+				`Altar of Sacrifice - Dyxemis. This altar is dedicated to the Vaelorian god of Pain. Sacrifice 1 Health to gain +5 max Toughness for the next D10+2 rooms/corridors.`,
+				`Altar of Sacrifice - Voteus. This altar is dedicated to the Vaelorian goddess of War. Sacrifice 1 Health to gain +10 to all attack rolls for the next D10+2 rooms/corridors.`,
+				`Altar of Sacrifice - Udall. This altar is dedicated to the Vaelorian goddess of Fury. Sacrifice 1 Health to gain +D4 Fire damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a> for the next D10+2 rooms/corridors.`,
+				`Altar of Sacrifice - Koias. This altar is dedicated to the Vaelorian god of Magic. Sacrifice 1 Health to gain +5 max Aether for the next D10+2 rooms/corridors.`,
+				`Altar of Sacrifice - Keasis. This altar is dedicated to the Valerian goddess of Peace. Sacrifice 1 Health to recover D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`The ground and ceiling above you shake and tremble, and you are showered in dust and pebbles. Make a successful Endurance check to avoid gaining 1 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>.`,
+				`A voice rises within you, making you question why are you bothering carrying all those coins when you have no use for them down here. Make a successful Resolve check or lose D100₵.`,
+				`You enter a room completely full of human bones, a veritable wall of femurs and skulls. Make a Resolve check to avoid losing 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>. Unfortunately, the pile seems to be much more unstable than you initially thought: make a Dodge check. If you pass it, you gain 10 XP and can make a roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>, as you uncover something of value beneath the bones. If you fail, you receive 2D6 Bludgeoning damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>.`,
+				`You find strange markings on the walls and floors. Make a Reason check: if you pass it you gain 10 XP, as you understand better the nature of this place and its inhabitants. If you fail, you're so distracted by the markings that you fail to realize that you're being attacked. Roll on the Combat Encounter table <a href="#" class="openPDF" data-page="119"
+								>(p. 119)</a>, the enemy has surprised you!`,
+				`It seems like a massacre took place here very recently, as the mangled remains of several people can be seen spread across the room. Each time you enter this room you must make a Resolve check to avoid losing 2 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, but you can attempt to scavenge it twice.`,
+				`Much to your surprise, you find an old man sitting inside this room. He seems to be a beggar that has probably fallen into Ker Nethalas by accident. Make a Reason check: if you pass it, you manage to give some indications to the man that will hopefully help him, and he thanks you by giving you something of value –roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>. If you fail, you didn't notice his strange behavior and the weird bulge on his chest. The man explodes in front of your eyes as a necropede bursts out of him and attacks you!`,
+				`This seems to be some old smuggler's hideout, as the room is full of boxes, most of them empty. Make an Athletics check to attempt to open one of the boxes, if you pass it you can make a roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`A mangled body sits against one of the room's walls. Make a Perception check: if you pass it, you find a charm among what's left of the body. The charm allows you to deal +D4 Fire damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a> when attached to your weapon, but its effects only last a single room.`,
+				`A constant stream of blood pours from one of the walls in this room. As you attempt to learn what's going on, make a Reason check: if you pass it, you don't really understand it any better but you earn 10 XP. If you fail you've managed to accidentally touch the blood, which seems to be extremely acidic. You receive 3D4 Acid damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>.`,
+				`You find a body that has been clearly drained of blood slumped against the wall. Make a Perception check as you examine the body: you find something of value, roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>. Unfortunately, you must also make a Dodge check, as the body suddenly lurches at you, before darting into the dark. If you fail, you are scratched and are Bleeding.`,
+				`You come across a terribly wounded and mutilated man, somehow still alive. If you choose to help him, make a Medicine check and remove 1xBandage. If you succeed the check you earn 20 XP. If you decide to ignore the man and move on you lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`A terrible sigil is painted in blood across the room's floor. Your vision swims even by simply glancing at it, but you still feel curious about it. If you insist on deciphering the sigil, make a Reason check: if you pass it you earn 20 XP, but if you fail you automatically lose D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, without a Resolve check.`,
+				`A dark, ominous pool of water is at the center of this room. You think you see a glimmer at the bottom… If you attempt to reach down and see what you find, make an Acrobatics check, as you carefully balance on the pool's edge. If you pass it, you manage to pull out something of value: roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>. If you fail, you slip and fall inside. Roll on the Growing Darkness table <a href="#" class="openPDF" data-page="106"
+								>(p. 106)</a>.`,
+				`A large hole on one of the room's walls seems to be almost inviting you to take a look inside it… If you choose to do so, make an Athletics check, as you stretch your arm as deep inside as you can. If you pass it, you manage to pull out something interesting: make a roll on the Spoils table<a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>. If you fail, something attempts to pull you in! You receive 2D6 Slashing damage <a href="#" class="openPDF" data-page="71"
+								>(p. 71)</a> before you manage to free yourself.`,
+				`The sudden toll of a bell fills the room and your mind. With a scream, you cover your ears and attempt to resist the psychic assault of the bell, which is nowhere to be seen. Make a Resolve check: if you pass, you gain 20 XP, as you manage to control the attack. If you fail choose one: roll on the Growing Darkness table <a href="#" class="openPDF" data-page="106"
+								>(p. 106)</a>, or roll on the Madness table <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`This room has been turned into a makeshift mausoleum, and it was relatively recently. At the center of it a sarcophagus, covered with melted candles, has clearly been dragged here. If you choose to desecrate the tomb, you lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a> but can make a roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>. If you choose to take a moment of respite and say a quick prayer for whoever is buried here, you regain D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`A twisted effigy made from the remains of countless people has been erected here. A dark energy draws you closer to it, but you can try to resist. Make a Resolve check, if successful you earn 10 XP, if you fail you feel the urge to somehow contribute to this monument of death, deeply cutting your arm and pouring blood over it. You receive 3D4 Slashing damage <a href="#" class="openPDF" data-page="71"
+								>(p. 71)</a>.`,
+				`As you enter the room, the smell of death invades your nostrils, making you choke. A trio of recently killed men hang from chains, their faces purple and bloated. If you spend time taking them down and trying to give their bodies the rest they deserve, you gain 2 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a> but recover D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>. If you ignore the corpses and move on, roll on the Growing Darkness table <a href="#" class="openPDF" data-page="106"
+								>(p. 106)</a>.`,
+				`You hear voices whispering in your ear, ghosts from the Vaelorian Ascendancy sharing forbidden secrets. Make a Reason check: if you pass it, you earn 10 XP, if you fail you lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, as your mind cannot handle their dark secrets.`,
+				`The room is littered with funerary vases. You can scavenge up to 3 times here.`,
+				`As you step into this chamber, you are trapped in reverie. You see your own death, clear as day, and a wave of anguish assaults you. You must pass a Resolve check or lose D6 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, but the next time your Health reaches 0 you can ignore the source of damage instead.`,
+				`In front of you a terrible statue depicting what must have been a member of the Vaelorian nobility appears to intensely stare at you, judging your worthiness. You feel repulsed by it instantly. If you accept its judgment, you must pass a Resolve check. If you do so, you are rewarded: roll twice on the Spoils table <a href="#" class="openPDF" data-page="19">(p. 196)</a>. If you decide to bash the statue you can remove the effects of a single active Event.`,
+				`A quiet, seemingly out of place fountain still pours water into a stone vase in a corner of this chamber. You sit for a few minutes, and take a moment to refresh yourself. You lose D4 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>.`,
+				`Strange, ghostly flames seem to move randomly across this room. Each time you enter it, you must pass a Dodge check or be struck by the flames, losing 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`This room has a pile of scrolls that seem to have survived the passage of time. If you sit a while and read them you can make a Reason check. If you pass it, you learn a weakness of this Domain's Overseer, allowing you to Stun them in the first round of combat against them.`,
+				`The room is covered in mosaics depicting fencing stances and techniques. Maybe there's something to learn here… Make a Reason check, if you pass it, increase your Bladed Weapons skill by 1.`,
+				`A furious specter appears in front of you, cursing you in the ancient Vaelorian tongue. Make a Resolve check, if you pass you earn 10 XP, as you learn from the harrowing experience. If you fail, you lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a> and gain 1 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>.`,
+				`This room seems to be the remains of a tomb robber's camp. Make a Perception check: if you pass it, you find D4 torches and D10 Crafting Supplies.`,
+				`You come across a terrible altar to a nameless deity. If you choose to defile it, make an Athletics check: if you pass it, you can eliminate the effects of an active Event. If you fail, you've made too much noise, attracting trouble! Make a roll on the Combat Encounters table <a href="#" class="openPDF" data-page="19">(p. 196)</a>.`,
+				`As you are about to enter the room, you hear the rustling of feet being dragged, growls echoing in the halls: the undead, hundreds of them! There's no way you can defeat this many… Make a Stealth check: if you pass, you hide in the shadows as they move along, and you earn 20 XP. If you fail, you've made some noise and attracted the attention of a few of them. You must discard an item from your belt and throw it to distract them away. If you have no belt, you must throw whatever you're carrying in your hand (i.e. weapon, torch, lamp, etc.).`,
+				`A feeling of holiness pervades this chamber, emanating from a single sigil embedded on the wall. Reset the Tension Die back to D8.`,
+				`This chamber is set up as a meditation spot. If you choose, you can kneel and try to settle your mind. Make a Resolve check: if you pass it, you recover D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, if you fail you lose 1 Sanity.`,
+				`As you enter the room, you are confronted with an angry spirit. “Give me what you stole from me!”, it hisses at you. Make a Resolve check: if you pass it, you gain 10 XP, as you manage to resist the spirit's demands. If you fail, the spirit passes through you, stealing D100₵.`,
+				`The moment you enter this chamber, you are assaulted by a spirit of darkness, trying to possess you. Make a Resolve check: if you succeed, you manage to fend off the entity and you gain 20 XP in the process. If you fail, the spirit corrupts you and you feel overwhelmed by misery. Each time you enter a new room you lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>, unless you sacrifice (i.e. destroy) a magic item in your possession.`,
+				`Strange devices you don't really understand are firmly planted around this room. Unfortunately, they seem to form some sort of magical circuit, since each time you cross between them you suffer a shock. Perform an Acrobatics check to skip above them to avoid receiving 2D6 Air damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a> each time you enter this room.`,
+				`A pile of refuse covers the corner of the room. There might be something useful there? Make a Perception check, if successful you find something interesting: roll on the Spoils table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+				`You have walked into some sort of summoning, as a lone warlock performs a forbidden ritual within a circle. Everything inside of you is screaming at you to interrupt the ritual… Perform a Stealth check to sneak behind the warlock and take them out. If you succeed, you manage to eliminate them before they can even realize what's going on; you recover D4 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>. If you fail, the warlock hears you and quickly casts some sort of spell on you. You wake up hours later, alive but confused. Increase your Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a> by 2 and roll on the Growing Darkness table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+				`The room is full of broken glass vials and flasks containing all sorts of alchemical substances, as well as the tools and equipment usually found in an alchemy lab. Make a Perception check: if you pass it, you find D4 Potions. If you fail, you only find a single one that you can still drink.`,
+				`Sprawled across the room's floor you can see what seems to be the contents of someone's bag. Huddled in a corner, you find the very recent corpse of the bag's owner. Make a Perception check: if you pass it, roll on the Spoils table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>. If you fail, you don't realize that whatever killed the person in this room has come back! Roll on the Combat Encounters table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`A section of one of the walls in this room seems to be made of moving pieces. Each piece has a different diagram, and you could swear they form a pattern, but they're not correctly placed… Make a Reason check, if you manage you solve the puzzle, revealing a small section of the wall that contains 2D100₵.`,
+				`A hole in the floor's room is completely filled with viscera. You can stick your arm into it and search for something of value. Make a Perception check: if you pass it you can make a roll on the Spoils table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>. If you fail, you don't find anything and lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`This large room appears to have been some sort of holding cell at some point. A rusty metal gate still blocks a corner of the room, and you can see some remains on the other side. If you attempt to open the gate make an Athletics check: if you succeed you find the desiccated corpse of a forgotten prisoner, and something of value. Make a roll on the Spoils table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+				`Some strange herbs grow from the corner of this dilapidated room. Make a Medicine check to determine if they have any medicinal properties: if you pass, you gain a dose of herbs that when consumed heal you 2D6 Wounds.`,
+				`The room is covered in thick mud, and you immediately sink down to your knees. You must make an Athletics check to cross it: for each time you fail, you gain 1 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>.`,
+				`A strange set of sigils cover the floor of this room. Convinced of the fact that they must hold some sort of key to understanding this place, you start studying them. Make a Reason check: if you pass, you can ignore the next roll on the Growing Darkness table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>. If you fail, you trigger some sort of failsafe and suffer 2D6 Arcane damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>.`,
+				`A swarm of small but ravenous vampire bats rush at you the second you enter this chamber. Make a successful Dodge check to avoid being bitten and scratched. If you fail you receive 2D4 Slashing damage <a href="#" class="openPDF" data-page="71"
+								>(p. 71)</a>. You must also pass an Endurance check or contract the Rot (see <a href="#" class="openPDF" data-page="74"
+								>page 74</a> for more details on the Rot).`,
+				`When you enter this room, you feel the recognizable presence of a deity, forcing you to fall to your knees due to the spiritual pressure. Like a hammer crashing down on you, you hear a voice in your head, saying “You've done well, my son. Be cleansed”. You are sure about it, that was Hesie, Goddess of Purity. You recover D6 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`The second you step in this room you are assaulted by an invisible force that slams against you. Make a combat check with your weapon of choice, if you succeed, you manage to fend off the assault and earn 10 XP. If you fail, you suffer D12 Bludgeoning damage.`,
+				`A fountain with the shape of a demonic head pours water into a hole in the ground. If you choose to drink from it, you suffer 2D6 Infernal damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>, but recover D6 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`This room has two doors, one to the left and one to the right (aside from the one you just entered through), despite what you rolled on the Room & Corridor Shape table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>. The door to the left leads you towards the Overseer's lair: reduce the Lair Die by one stage. The one on the right leads you to a strange fountain with black waters pouring from it. If you decide to drink from it, you automatically trigger a roll on the Growing Darkness table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>, but recover D10 Toughness.`,
+				`A pond that seems to have formed naturally after centuries of water dripping down from one of the sides fills this room. Inside it, you could swear you see something shining… Make an Athletics check: if you pass it, you manage to stretch enough without falling inside the pond, recovering 3D20₵. If you fail, you suddenly see your own reflection on the dark surface of the water twist into a hideous creature. You lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`A waterfall is furiously roaring in this chamber, water falling from up high in the darkness above. Make a Perception check: if you pass it, you manage to scurry out of the room before a group of enemies sneak up on you under the cover of the waterfall's noise. If you fail, you're attacked by surprise: roll on the Combat Encounters table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+				`A strange vine grows between the cracks in this room. Hanging from it are a few dark and plump berries. If you decide to eat them, roll D6: 1-3 you recover 5 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>, 4-6 you are poisoned, receiving 3D4 Poison damage <a href="#" class="openPDF" data-page="71"
+								>(p. 71)</a>.`,
+				`As you step into this room you feel the crunch of broken bones beneath your feet. The place is completely littered with human remains, piled all around you. Make an Acrobatics check: if you fail, you've slipped on a femur and crashed into a pile of skulls, receiving D10 Bludgeoning damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>. If you pass, you uncover something of value: roll on the Spoils table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+				`A strange, clearly arcane artifact vibrates and shakes at the center of this room. The size of a cart, it emits heat and light and feels and looks highly unstable, as if it were about to blow up. If you attempt to somehow deactivate it, make a Reason check: if you pass, the artifact stops shaking and emitting heat until it becomes inert; you earn 10 XP. If you fail or ignore the device, the next time a Growing Darkness event is triggered, ignore the result. Instead, the whole necropolis shakes as you can hear a loud explosion and debris falls on you, dealing 5D4 Bludgeoning damage <a href="#" class="openPDF" data-page="70"
+								>(p. 70)</a>.`,
+				`Among the rubble and filth that covers this room, you find what looks like some sort of journal. It appears to belong to someone who was trapped down here as well, many decades ago. Maybe you can learn something about this place by studying it… Make a Reason check: if you succeed, you can ignore the next Growing Darkness event.`,
+				`A crude map has been drawn on the wall of this room. Make a Reason check: if you pass, you can fully generate the next three rooms now, without having to directly walk into them.`,
+				`A glowing sphere of what looks like aether-infused blood floats atop a pedestal in the center of this chamber. It calmly levitates there, and it doesn't feel dangerous… If you touch it, the blood seeps into you: you gain D10 temporary Aether, but immediately lose the initiative in your next combat.`,
+				`Dancing flames float around you as you enter the room, threatening to burn you. Make a Resolve check: if you pass it, you earn 10 XP and the insight of what threats are to come. You can roll now to determine what your next 3 Combat Encounters will be. If you fail, the flames overwhelm you, and you gain the Burning condition.`,
+				`A large bronze chain hangs from the ceiling of this room. Upon closer inspection, it looks like it disappears into a small orifice, both up in the ceiling and on the floor, making you think that this is some sort of pulling contraption. If you decide to pull the chain, make an Athletics check: if you pass, you gain 20 XP, as you slowly but surely manage to make the chain move. If you fail, a cackling laughter is heard booming in the room… The next combat encounter has its Combat Skill increased by 20.`,
+				`A skeletal figure is slumped against the wall, and seems to have scribbled something on it. Make a Reason check: if you pass it, you manage to decipher the message. It's a warning of what comes ahead, allowing you to start the next combat encounter with +20 Initiative.`,
+				`As you're crossing this empty room, you feel something grabbing at your ankle. Before you can react violently, you look down and see a human hand sticking out from a slit of the stone floor. There's someone down there… and they want to propose something to you. If you accept their strange deal, you lose D4 maximum Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a> but gain D4 maximum Toughness.`,
+				`This narrow chamber is filled with sharp iron pieces that stick from all surfaces, their purpose completely unknown to you. In order to cross the room safely, you must pass an Acrobatics check: if you fail, you are Bleeding.`,
+				`The room must be passing near some sort of volcanic chamber, because the heat here is completely unbearable. You gain D6 Exhaustion <a href="#" class="openPDF" data-page="78"
+								>(p. 78)</a>.`,
+				`The ancient spirit of a Vaelorian necrolord appears in front of you, rushing towards you as it grabs your head from both sides. Make a Resolve check: if you pass it, you gain 100 XP, as it fills your mind with forbidden knowledge. If you fail, your mind can't take it, and you must roll on the Madness table <a href="#" class="openPDF" data-page="19"
+								>(p. 196)</a>.`,
+			];
+
+			const dbScavenge = [
+				`You uncover some grisly remains. Make a successful Resolve check or lose 1 Sanity <a href="#" class="openPDF" data-page="79"
+								>(p. 79)</a>.`,
+				`You find nothing of interest.`,
+				`You discover ${fnRoll(20)}₵.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You find ${fnRoll(4)} Crafting Supplies.`,
+				`You discover ${fnRoll(20) + fnRoll(20)}₵.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You find ${fnRoll(4)} Cooking Supplies.`,
+				`You discover ${fnRoll(100)}₵.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+				`Roll on the Spoils table <a href="#" class="openPDF" data-page="196"
+								>(p. 196)</a>.`,
+			];
+
+			const dbCombatInfo = ``;
+
+			const dbDifficulty = [
+				["Child's Play", "+30"],
+				["Effortless", "+20"],
+				["Easy", "+10"],
+				["Normal", "+0"],
+				["Normal", "+0"],
+				["Demanding", "-10"],
+				["Hard", "-20"],
+				["Impossible", "-30"],
+			];
+
+			let dbEnemyStack = [];
+
+			const txtCharLeft = document.getElementById("txtCharLeft");
+			const txtCharRight = document.getElementById("txtCharRight");
+			const txtInvLeft = document.getElementById("txtInvLeft");
+			const txtInvRight = document.getElementById("txtInvRight");
+			const txtDomain = document.getElementById("txtDomain");
+			const txtNotes = document.getElementById("txtNotes");
+
+			const defaultNotes = {
+				charLeft: `Name:\t\t?\nCrime:\t\tD20 p.14\nGoals:\t\tChoose two p.112+\n\t\t\t\nLevel:\t\t1\nXP:\t\t50/1000\nHealth:\t\tD6+8\nToughness:\t2D6+10\nAether:\t\tD6+8\nSanity:\t\tD6+8\nMagic Res.:\t20\n\nDamage Mod.\t0\nExhaustion:\t0 (-0)\nLightsource:\txxxxx xxxxx xxxxx xxxxx\n\nMasteries: \tChoose two p.19+\n\n\n\n\nMadness:\nPerks:\n\nVulnerabilities/Resistances:\n`,
+				charRight: `Acrobatics:\t\t?\nAthletics (10):\t\t?+10\nBladed Weapons:\t\t?\nBludgeoning Weapons:\t?\nDodge (10):\t\t?+10\nEndurance:\t\t?\nMedicine:\t\t?\nPerception (20):\t?+20\nResolve (10):\t\t?+10\nReason:\t\t\t?\nScavenge:\t\t?\nShafted Weapons:\t?\nStealth:\t\t?\nThievery:\t\t?\nUnarmed Combat (20):\t?+20\n\nWpn 1: Choose one p.190+\nWpn 2:\nWpn 3:\n\nArmor: D20 p.205\nLegs:\nTorso:\nArms:\nHead:\n`,
+				invLeft: `Main Hand:\nOff-Hand:\nHelmet:\nArmor:\nGloves:\nBoots:\nAmulet:\nRing:\nRing:\n\nBelt:\n1:\n2:\n3:\n4:\n`,
+				invRight: `Coins:\tD20\nGems:\t0\nSlots:\t1\n\nCrafting S.:\tD10+5\nCooking S.:\tD10\nRations:\t0\n\nGear(10) Backpack(20) Pouches(3x5):\n- Coins/Gems\n- Torch x1\n\n\n\n`,
+				domain: `Domain Name:\t?\nTension Die:\tD8\nLair/Exit Die:\tD12\n\nEvents:\n\n\nOverseer:\tD10 p.165\nInfluence:\tD10 p.87\n\nMap:\n\n\n\n`,
+				notes: `Journal:\n`,
+			};
+
+			let userNotes = {};
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnRollRoom() {
+				let count = 0;
+				let inter = setInterval(() => {
+					let roll = fnRoll(100);
+					if (roll >= 26) {
+						divRoom.innerHTML = `<h1 class="big">Room ${roll}</h1><br>`;
+					} else {
+						divRoom.innerHTML = `<h1 class="big">Corridor ${roll}</h1><br>`;
+					}
+					count++;
+					if (count > 10) {
+						clearInterval(inter);
+						fnRenderRoomData();
+					}
+				}, 40);
+				// fnRenderRoomData();
+			}
+
+			function fnRenderRoomData() {
+				let html = "";
+				let roll = fnRoll(100);
+				if (roll >= 26) {
+					html += `<h1 class="big">Room ${roll}</h1><br>`;
+					html += `<img class="imgTile" src="img/tiles/tile-${roll}.jpg" /><br>`;
+					roll = fnRoll(100);
+					html += `${
+						dbRoomDesc[roll - 1]
+					}<br><b class="big dark">&darr;</b><br>`;
+					html += `<h1>Tension Check</h1> <span class="page"><a href="#" class="openPDF" data-page="106"
+					>(p. 106)</a></span><br>`;
+					html += `(D10: ${fnRoll(10)})&emsp;D8: ${fnRoll(
+						8
+					)}&emsp;D6: ${fnRoll(6)}&emsp;D4: ${fnRoll(
+						4
+					)}<br><b class="big dark">&darr;</b><br>`;
+
+					html += `<h1>Lair/Exit Check</h1> <span class="page"><a href="#" class="openPDF" data-page="86"
+					>(p. 86)</a></span><br>`;
+					html += `D12: ${fnRoll(12)}&emsp;D10: ${fnRoll(
+						10
+					)}&emsp;D8: ${fnRoll(8)}&emsp;D6: ${fnRoll(
+						6
+					)}&emsp;D4: ${fnRoll(
+						4
+					)}<br><b class="big dark">&darr;</b><br>`;
+					html += `<h1>Lightsource -1</h1> <span class="page"><a href="#" class="openPDF" data-page="84"
+					>(p. 84)</a></span><br><b class="big dark">&darr;</b><br>`;
+					roll = fnRoll(20);
+					if (roll >= 10) {
+						html += `<h1>Combat Encounter</h1><br>`;
+						roll = fnRoll(dbEnemyStack.length) - 1;
+						let nme = "";
+						if (dbEnemyStack[roll] <= dbEnemiesCore.length) {
+							nme = `${
+								dbEnemiesCore[dbEnemyStack[roll] - 1][0]
+							} <span class="page"><a href="#" class="openPDF" data-page="${
+								dbEnemyStack[roll - 1] + 122
+							}"
+					>(p. ${dbEnemyStack[roll - 1] + 122})</a></span><br>`;
+						}
+						html += `${nme}<img class="imgEncounter" src="img/encounters/encounter-${dbEnemyStack[roll]}.jpg" /><br>${divCombatInfo.innerHTML}<br><b class="big dark">&darr;</b><br>`;
+					} else {
+						roll = fnRoll(100);
+						html += `<h1>Event:</h1><br>${
+							dbEvents[roll - 1]
+						}<br><b class="big dark">&darr;</b><br>`;
+					}
+					html += `<h1>Scavenge?</h1> <span class="page"><a href="#" class="openPDF" data-page="103"
+					>(p. 103)</a></span><br>`;
+					html += `<button id="btnShowScavengeResult" style="width: 40%" onclick="fnShowScavengeResult()">Success</button><button id="btnShowScavengeFailResult" style="width: 40%; margin-left: 1em;" onclick="fnShowScavengeFailResult()">Fumble</button>`;
+					roll = fnRoll(20);
+					html += `<span id="spScavengeResult" style="display: none">`;
+					html += `${dbScavenge[roll - 1]}`;
+					html += `<br>Critical: ${dbScavenge[roll - 1 + 5]}</span>`;
+					html += `<span id="spScavengeFailResult" style="display: none">Fumble!<br><b class="big dark">&darr;</b><br><b>Combat Encounter</b><br>`;
+					roll = fnRoll(dbEnemyStack.length) - 1;
+					let nme = "";
+					if (dbEnemyStack[roll] <= dbEnemiesCore.length) {
+						nme = `${
+							dbEnemiesCore[dbEnemyStack[roll] - 1][0]
+						} <span class="page"><a href="#" class="openPDF" data-page="${
+							dbEnemyStack[roll - 1] + 122
+						}"
+					>(p. ${dbEnemyStack[roll - 1] + 122})</a></span><br>`;
+					}
+					html += `${nme}<img class="imgEncounter" src="img/encounters/encounter-${dbEnemyStack[roll]}.jpg" /><br>${divCombatInfo.innerHTML}</span>`;
+				} else {
+					html += `<h1 class="big">Corridor ${roll}</h1><br>`;
+					html += `<img class="imgTile" src="img/tiles/tile-${roll}.jpg" /><br>`;
+					roll = fnRoll(20);
+					html += `${
+						dbCorridorDesc[roll - 1]
+					}<br><b class="big dark">&darr;</b><br>`;
+					html += `<h1>Tension Check</h1> <span class="page"><a href="#" class="openPDF" data-page="106"
+					>(p. 106)</a></span><br>`;
+					html += `(D10: ${fnRoll(10)})&emsp;D8: ${fnRoll(
+						8
+					)}&emsp;D6: ${fnRoll(6)}&emsp;D4: ${fnRoll(
+						4
+					)}<br><b class="big dark">&darr;</b><br>`;
+
+					if (roll >= 15) {
+						html += `<h1>Combat Encounter</h1><br>`;
+						roll = fnRoll(dbEnemyStack.length) - 1;
+						let nme = "";
+						if (dbEnemyStack[roll] <= dbEnemiesCore.length) {
+							nme = `${
+								dbEnemiesCore[dbEnemyStack[roll] - 1][0]
+							} <span class="page"><a href="#" class="openPDF" data-page="${
+								dbEnemyStack[roll - 1] + 122
+							}"
+					>(p. ${dbEnemyStack[roll - 1] + 122})</a></span><br>`;
+						}
+						html += `${nme}<img class="imgEncounter" src="img/encounters/encounter-${dbEnemyStack[roll]}.jpg" /><br>${divCombatInfo.innerHTML}<br>`;
+					} else {
+						html += `<h1>There is nothing here.</h1>`;
+					}
+				}
+
+				html += fnDoor();
+
+				divRoom.innerHTML =
+					html +
+					`<br><b class="big dark">&darr;</b><br><button id="btnRollRoom" class="" onclick="fnRollRoom()" title="Shortcut: N">
+					New Room/Corridor
+				</button><br><br><br><br><br><br><br><br><br><br><br>`;
+				window.scrollTo({ top: 0, behavior: "smooth" });
+				fnSave();
+			}
+
+			function fnShowScavengeResult() {
+				document.getElementById("spScavengeResult").style.display =
+					"inline";
+				document.getElementById("btnShowScavengeResult").style.display =
+					"none";
+				document.getElementById(
+					"btnShowScavengeFailResult"
+				).style.display = "none";
+				fnSave();
+			}
+
+			function fnShowScavengeFailResult() {
+				document.getElementById("spScavengeFailResult").style.display =
+					"inline";
+				document.getElementById("btnShowScavengeResult").style.display =
+					"none";
+				document.getElementById(
+					"btnShowScavengeFailResult"
+				).style.display = "none";
+				fnSave();
+			}
+
+			function fnDoor() {
+				let locked = false;
+				let contMessage = `o ahead with opening the door.`;
+
+				let html = `<br><b class="big dark">&darr;</b><br><h1>New Door?</h1> <span class="page"><a href="#" class="openPDF" data-page="104"
+					>(p. 104)</a></span><br>`;
+				html += `<button id="btnDoorLockCheck" class="" onclick="fnShowDoorLockCheck()">
+					Check Lock
+				</button><span id="spDoorLockCheckResult" style="display: none">`;
+				let roll = fnRoll(20);
+				if (roll >= 12) {
+					locked = true;
+					contMessage = `o ahead with picking or breaking down the door.`;
+					roll = fnRoll(8);
+					html += `Locked!<br>
+					Unlock with Lockpick and Thievery ${dbDifficulty[roll - 1][1]} check (${
+						dbDifficulty[roll - 1][0]
+					}).<br><br>Or break down with Athletics and Tension check. Athletics +20 after failed attempt.`;
+					html += `<br><b class="big dark">&darr;</b><br><h1>Pick or Break Down Door?</h1><br>`;
+				} else {
+					html += `Not locked!`;
+					html += `<br><b class="big dark">&darr;</b><br><h1>Open Door?</h1><br>`;
+				}
+				html += `<button id="btnDoorCheckTraps" class="" onclick="fnShowCheckTraps()">
+					Check for Traps
+				</button><span id="spDoorCheckTrapResult" style="display: none">`;
+				roll = fnRoll(10);
+				if (roll >= 7) {
+					html += `Trapped! <span class="page"><a href="#" class="openPDF" data-page="104"
+					>(p. 104)</a></span><br>Do a Perception check.<br><br><table><tr><td><h1>Success</h1><br>Dismantle trap with Thievery Tools and Thievery check.</td><td style="width: 3%; background-color: unset">&nbsp;</td><td><h1>Fail</h1><br>Trap triggered! Roll on Traps Table <a href="#" class="openPDF" data-page="105"
+								>(p. 105)</a>.</td></tr></table><br>Then g${contMessage}`;
+				} else {
+					html += `No traps!<br>G${contMessage}`;
+				}
+
+				html += `</span></span>`;
+
+				return html;
+			}
+
+			function fnShowDoorLockCheck() {
+				document.getElementById("spDoorLockCheckResult").style.display =
+					"inline";
+				document.getElementById("btnDoorLockCheck").style.display =
+					"none";
+				fnSave();
+			}
+
+			function fnShowCheckTraps() {
+				document.getElementById("spDoorCheckTrapResult").style.display =
+					"inline";
+				document.getElementById("btnDoorCheckTraps").style.display =
+					"none";
+				fnSave();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			function fnRoll(max) {
+				return Math.floor(Math.random() * max) + 1;
+			}
+
+			function fnD(val) {
+				let btn;
+				let count = 0;
+				if (val === "2d6") {
+					btn = document.getElementById(`btn2D6`);
+					val = 6;
+					let inter = setInterval(() => {
+						btn.innerHTML = `<span class="btnLabel">2D6:</span> ${
+							fnRoll(val) + fnRoll(val)
+						}`;
+						count++;
+						if (count > 10) {
+							clearInterval(inter);
+						}
+					}, 20);
+				} else {
+					btn = document.getElementById(`btnD${val}`);
+					let inter = setInterval(() => {
+						btn.innerHTML = `<span class="btnLabel">D${val}:</span> ${fnRoll(
+							val
+						)}`;
+						count++;
+						if (count > 10) {
+							clearInterval(inter);
+						}
+					}, 20);
+				}
+			}
+
+			function fnDiff() {
+				const btn = document.getElementById(`btnDiff`);
+				let count = 0;
+				let inter = setInterval(() => {
+					let roll = fnRoll(8) - 1;
+					btn.innerHTML = `${dbDifficulty[roll][0]} (${dbDifficulty[roll][1]})`;
+					count++;
+					if (count > 10) {
+						clearInterval(inter);
+					}
+				}, 20);
+			}
+
+			let diceShown = 0;
+			let pdfShown = 1;
+			let pdfIndexShown = 0;
+
+			function fnToggleDice() {
+				const divBottom = document.getElementById("divBottom");
+
+				if (diceShown === 0) {
+					if (window.pdfDoc && pdfShown === 1) {
+						document.getElementById(
+							"divPDFcontainer"
+						).style.display = "block";
+						document.getElementById("divPDFbuttons").style.display =
+							"flex";
+						divBottom.style.height = "100%";
+					} else if (window.pdfDoc && pdfShown === 0) {
+						document.getElementById(
+							"divPDFcontainer"
+						).style.display = "none";
+						document.getElementById("divPDFbuttons").style.display =
+							"flex";
+						divBottom.style.height = "12rem";
+					} else {
+						document.getElementById(
+							"divPDFcontainer"
+						).style.display = "none";
+						document.getElementById("divPDFbuttons").style.display =
+							"none";
+						divBottom.style.height = "9rem";
+					}
+					diceShown = 1;
+					document.getElementById("btnToggleDice").innerHTML =
+						"&#9660;";
+					divBottom.style.bottom = 0;
+				} else {
+					diceShown = 0;
+					if (window.pdfDoc && pdfShown === 1) {
+						divBottom.style.bottom = "calc(-100% + 2rem)";
+					} else if (window.pdfDoc && pdfShown === 0) {
+						divBottom.style.bottom = "-10rem";
+					} else {
+						divBottom.style.bottom = "-7rem";
+					}
+					document.getElementById("btnToggleDice").innerHTML =
+						"&#9650;";
+				}
+			}
+
+			function fnTogglePDF() {
+				if (pdfShown === 1) {
+					document.getElementById("divPDFcontainer").style.display =
+						"none";
+					divBottom.style.height = "12rem";
+					pdfShown = 0;
+				} else {
+					document.getElementById("divPDFcontainer").style.display =
+						"block";
+
+					divBottom.style.height = "100%";
+					pdfShown = 1;
+				}
+			}
+
+			function fnTogglePDFIndex() {
+				if (pdfShown === 0) {
+					fnTogglePDF();
+					pdfIndexShown = 0;
+				}
+				if (pdfIndexShown === 1) {
+					document.getElementById("divPDFTableIndex").style.display =
+						"none";
+					pdfIndexShown = 0;
+				} else {
+					document.getElementById("divPDFTableIndex").style.display =
+						"block";
+					pdfIndexShown = 1;
+				}
+			}
+
+			function fnHidePDFIndex() {
+				document.getElementById("divPDFTableIndex").style.display =
+					"none";
+				pdfIndexShown = 0;
+			}
+
+			function fnToggleSettings(x) {
+				if (x === 1) {
+					document.getElementById("divSettings").style.display =
+						"block";
+				} else {
+					document.getElementById("divSettings").style.display =
+						"none";
+				}
+			}
+
+			let combatDiceShown = false;
+			function fnToggleCombatDice() {
+				if (!combatDiceShown) {
+					document.getElementById("divCombatDice").style.bottom =
+						"0rem";
+					document.getElementById("btnToggleCombatDice").innerHTML =
+						"&#9660; Combat Overlay";
+				} else {
+					document.getElementById("divCombatDice").style.bottom =
+						"-10rem";
+					document.getElementById("btnToggleCombatDice").innerHTML =
+						"&#9650; Combat Overlay";
+				}
+				combatDiceShown = !combatDiceShown;
+			}
+
+			function fnSettingsEnemies() {
+				dbEnemyStack = [];
+				if (chkEnemiesCore.checked) {
+					for (let i = 1; i <= 43; i++) {
+						dbEnemyStack.push(i);
+					}
+				}
+				if (chkEnemiesVC1.checked) {
+					for (let i = 44; i <= 55; i++) {
+						dbEnemyStack.push(i);
+					}
+				}
+				if (chkEnemiesVC2.checked) {
+					for (let i = 56; i <= 64; i++) {
+						dbEnemyStack.push(i);
+					}
+				}
+				if (dbEnemyStack.length === 0) {
+					chkEnemiesCore.checked = true;
+					fnSettingsEnemies();
+				}
+				fnSave();
+			}
+
+			function fnBackupNotes() {
+				fnSave();
+				const obj = userNotes;
+				const json = JSON.stringify(obj, null, 2);
+				const blob = new Blob([json], { type: "application/json" });
+				const url = URL.createObjectURL(blob);
+
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = "Ker Nethalas Game Backup";
+				a.click();
+
+				URL.revokeObjectURL(url);
+			}
+
+			const btnImport = document.getElementById("btnImport");
+			const fileImport = document.getElementById("fileImport");
+
+			btnImport.addEventListener("click", () => {
+				fileImport.click();
+			});
+
+			fileImport.addEventListener("change", () => {
+				const file = fileImport.files[0];
+				if (!file) return;
+
+				const reader = new FileReader();
+				reader.onload = () => {
+					userNotes = JSON.parse(reader.result);
+					fnUpdateNoteTextareas();
+					fnSave();
+				};
+				reader.readAsText(file);
+			});
+
+			function fnSave() {
+				localStorage.setItem("gbfKNHAreload", reload);
+				localStorage.setItem(
+					"gbfKNHAenemiesCore",
+					JSON.stringify(Boolean(chkEnemiesCore.checked))
+				);
+				localStorage.setItem(
+					"gbfKNHAenemiesVC1",
+					JSON.stringify(Boolean(chkEnemiesVC1.checked))
+				);
+				localStorage.setItem(
+					"gbfKNHAenemiesVC2",
+					JSON.stringify(Boolean(chkEnemiesVC2.checked))
+				);
+				localStorage.setItem("gbfKNHAcontent", divRoom.innerHTML);
+				fnUpdateNoteObject();
+				localStorage.setItem("gbfKNHAnotes", JSON.stringify(userNotes));
+				console.log("SAVE:" + userNotes);
+			}
+
+			function fnLoad() {
+				if (localStorage.getItem("gbfKNHAreload") == reload) {
+					try {
+						chkEnemiesCore.checked = JSON.parse(
+							localStorage.getItem("gbfKNHAenemiesCore")
+						);
+						chkEnemiesVC1.checked = JSON.parse(
+							localStorage.getItem("gbfKNHAenemiesVC1")
+						);
+						chkEnemiesVC2.checked = JSON.parse(
+							localStorage.getItem("gbfKNHAenemiesVC2")
+						);
+						divRoom.innerHTML =
+							localStorage.getItem("gbfKNHAcontent");
+						userNotes = JSON.parse(
+							localStorage.getItem("gbfKNHAnotes")
+						);
+						fnUpdateNoteTextareas();
+						console.log(
+							"------------------------------\nLOAD:" + userNotes
+						);
+						fnSettingsEnemies();
+					} catch (error) {
+						fnReset();
+					}
+				} else {
+					fnReset();
+				}
+			}
+
+			function fnUpdateNoteObject() {
+				userNotes.charLeft = txtCharLeft.value;
+				userNotes.charRight = txtCharRight.value;
+				userNotes.invLeft = txtInvLeft.value;
+				userNotes.invRight = txtInvRight.value;
+				userNotes.domain = txtDomain.value;
+				userNotes.notes = txtNotes.value;
+			}
+
+			function fnUpdateNoteTextareas() {
+				txtCharLeft.value = userNotes.charLeft;
+				txtCharRight.value = userNotes.charRight;
+				txtInvLeft.value = userNotes.invLeft;
+				txtInvRight.value = userNotes.invRight;
+				txtDomain.value = userNotes.domain;
+				txtNotes.value = userNotes.notes;
+			}
+
+			function fnReset() {
+				clearPDF();
+				userNotes = defaultNotes;
+				fnUpdateNoteTextareas();
+				fnToggleSettings(0);
+				chkEnemiesCore.checked = true;
+				chkEnemiesVC1.checked = false;
+				chkEnemiesVC2.checked = false;
+				fnSettingsEnemies();
+				fnRollRoom();
+			}
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+
+			document.addEventListener("touchstart", () => {}, true);
+
+			document.addEventListener("change", (e) => {
+				if (e.target.classList.contains("notesText")) {
+					fnSave();
+				}
+			});
+
+			document.addEventListener("keydown", (e) => {
+				if (!e.target.classList.contains("notesText")) {
+					if (
+						e.key.toLowerCase() === "n" &&
+						!e.ctrlKey &&
+						!e.shiftKey
+					) {
+						e.preventDefault();
+						fnRollRoom();
+					}
+					if (
+						e.key.toLowerCase() === "d" &&
+						!e.ctrlKey &&
+						!e.shiftKey
+					) {
+						e.preventDefault();
+						fnToggleDice();
+					}
+					if (
+						e.key.toLowerCase() === "d" &&
+						!e.ctrlKey &&
+						e.shiftKey
+					) {
+						e.preventDefault();
+						fnToggleCombatDice();
+					}
+					if (
+						e.key.toLowerCase() === "p" &&
+						!e.ctrlKey &&
+						!e.shiftKey &&
+						diceShown === 1
+					) {
+						e.preventDefault();
+						fnTogglePDF();
+					}
+					if (
+						e.key.toLowerCase() === "t" &&
+						!e.ctrlKey &&
+						!e.shiftKey &&
+						diceShown === 1
+					) {
+						e.preventDefault();
+						fnTogglePDFIndex();
+					}
+					if (
+						e.key.toLowerCase() === "j" &&
+						!e.ctrlKey &&
+						!e.shiftKey
+					) {
+						e.preventDefault();
+						const detDomain = document.getElementById("detDomain");
+						const detChar = document.getElementById("detChar");
+						detDomain.open = !detDomain.open;
+						if (detDomain.open) {
+							detDomain.scrollIntoView({
+								behavior: "smooth",
+								block: "start",
+								inline: "nearest",
+							});
+						} else {
+							detChar.scrollIntoView({
+								behavior: "smooth",
+								block: "start",
+								inline: "nearest",
+							});
+						}
+					}
+					if (
+						e.key.toLowerCase() === "c" &&
+						!e.ctrlKey &&
+						!e.shiftKey
+					) {
+						e.preventDefault();
+						const detChar = document.getElementById("detChar");
+						detChar.open = !detChar.open;
+						detChar.scrollIntoView({
+							behavior: "smooth",
+							block: "start",
+							inline: "nearest",
+						});
+					}
+					if (
+						e.key.toLowerCase() === "i" &&
+						!e.ctrlKey &&
+						!e.shiftKey
+					) {
+						e.preventDefault();
+						const detInv = document.getElementById("detInv");
+						const detChar = document.getElementById("detChar");
+						detInv.open = !detInv.open;
+						if (detInv.open) {
+							detInv.scrollIntoView({
+								behavior: "smooth",
+								block: "start",
+								inline: "nearest",
+							});
+						} else {
+							detChar.scrollIntoView({
+								behavior: "smooth",
+								block: "start",
+								inline: "nearest",
+							});
+						}
+					}
+					if (e.key === "ArrowLeft" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						document.getElementById("btnPDFprev").click();
+					}
+					if (e.key === "ArrowRight" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						document.getElementById("btnPDFnext").click();
+					}
+					if (e.key === "1" && e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(100);
+					}
+					if (e.key === "0" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(100);
+					}
+					if (e.key === "2" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(20);
+					}
+					if (e.key === "2" && e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(12);
+					}
+					if (e.key === "2" && e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(12);
+					}
+					if (e.key === "6" && e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(`2d6`);
+					}
+					if (e.key === "1" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(10);
+					}
+
+					if (e.key === "8" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(8);
+					}
+					if (e.key === "6" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(6);
+					}
+					if (e.key === "4" && !e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnD(4);
+					}
+					if (e.key === "s" && e.ctrlKey && !e.shiftKey) {
+						e.preventDefault();
+						fnBackupNotes();
+					}
+					// if (e.key === "y" && e.ctrlKey && !e.shiftKey) {
+					// 	e.preventDefault();
+					// 	fnReset();
+					// }
+				}
+
+				if (e.key === "Escape" && !e.ctrlKey && !e.shiftKey) {
+					e.preventDefault();
+					e.target.blur();
+				}
+
+				if (
+					e.key === "Tab" &&
+					e.target.classList.contains("notesText")
+				) {
+					e.preventDefault();
+
+					const t = e.target;
+					const start = t.selectionStart;
+					const end = t.selectionEnd;
+
+					t.setRangeText("\t", start, end, "end");
+				}
+			});
+
+			// bad hacky wait for es module ...
+			const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+			(async () => {
+				await sleep(500);
+				if (localStorage.getItem("gbfKNHAcontent")) {
+					fnLoad();
+				} else {
+					fnReset();
+				}
+			})();
+
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+			// ------------------------------------------------------------
+		</script>
+
+		<script type="module">
+			import * as pdfjsLib from "./lib/pdf.mjs";
+			pdfjsLib.GlobalWorkerOptions.workerSrc = "./lib/pdf.worker.mjs";
+
+			const DB = "pdfStore",
+				STORE = "files",
+				KEY = "userPDF";
+			window.pdfDoc = null;
+			let currentPage = 1;
+
+			/* IndexedDB helpers */
+			const getDB = () =>
+				new Promise((r) => {
+					const o = indexedDB.open(DB, 1);
+					o.onupgradeneeded = () => o.result.createObjectStore(STORE);
+					o.onsuccess = () => r(o.result);
+				});
+
+			/* Pick & save PDF */
+			pick.addEventListener("click", (e) => {
+				e.preventDefault();
+				const i = Object.assign(document.createElement("input"), {
+					type: "file",
+					accept: "application/pdf",
+				});
+				i.onchange = async () => {
+					const db = await getDB();
+					db.transaction(STORE, "readwrite")
+						.objectStore(STORE)
+						.put(i.files[0], KEY);
+					loadPDF(); // load immediately
+					alert("PDF linked!");
+				};
+				i.click();
+			});
+
+			/* Load PDF from IndexedDB */
+			async function loadPDF() {
+				const db = await getDB();
+				const req = db.transaction(STORE).objectStore(STORE).get(KEY);
+				req.onsuccess = async () => {
+					if (!req.result) return;
+					const arrayBuffer = await req.result.arrayBuffer();
+					window.pdfDoc = await pdfjsLib.getDocument({
+						data: arrayBuffer,
+					}).promise;
+					renderPage(1);
+				};
+			}
+
+			/* Render a page */
+			async function renderPage(num) {
+				if (!window.pdfDoc || num < 1 || num > window.pdfDoc.numPages)
+					return;
+				currentPage = num;
+				const page = await window.pdfDoc.getPage(num);
+				const canvas = document.getElementById("pdf"),
+					ctx = canvas.getContext("2d");
+				const viewport = page.getViewport({
+					scale: window.devicePixelRatio || 1.5,
+				});
+				canvas.width = viewport.width;
+				canvas.height = viewport.height;
+				await page.render({ canvasContext: ctx, viewport }).promise;
+			}
+
+			/* Page links */
+			document.addEventListener("click", (e) => {
+				const link = e.target.closest("a.openPDF");
+				if (!link) return;
+				e.preventDefault();
+				currentPage = Number(link.dataset.page);
+				renderPage(Number(link.dataset.page));
+				if (window.pdfDoc) {
+					diceShown = 0;
+					fnToggleDice();
+					pdfShown = 0;
+					fnTogglePDF();
+					pdfIndexShown = 1;
+					fnTogglePDFIndex();
+				} else {
+					alert(
+						"Link your Ker Nethalas 1.6 PDF in the settings menu first."
+					);
+				}
+			});
+
+			document.getElementById("btnPDFprev").onclick = () =>
+				renderPage(currentPage - 1);
+			document.getElementById("btnPDFnext").onclick = () =>
+				renderPage(currentPage + 1);
+
+			/* Auto-load last PDF */
+			loadPDF();
+
+			window.clearPDF = async function () {
+				const db = await new Promise((r) => {
+					const request = indexedDB.open("pdfStore", 1);
+					request.onupgradeneeded = () =>
+						request.result.createObjectStore("files");
+					request.onsuccess = () => r(request.result);
+				});
+
+				const tx = db.transaction("files", "readwrite");
+				tx.objectStore("files").delete("userPDF");
+
+				tx.oncomplete = () => {
+					console.log("PDF cleared from IndexedDB");
+					const canvas = document.getElementById("pdf");
+					if (canvas)
+						canvas
+							.getContext("2d")
+							.clearRect(0, 0, canvas.width, canvas.height);
+					// Reset PDF.js state if needed
+					window.pdfDoc = null;
+					window.currentPage = 1;
+				};
+			};
+		</script>
+	</body>
+</html>
